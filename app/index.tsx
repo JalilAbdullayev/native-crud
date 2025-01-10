@@ -9,12 +9,14 @@ import {ThemeContext} from "@/context/ThemeContext";
 import Animated, {LinearTransition} from "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {StatusBar} from "expo-status-bar";
+import {useRouter} from "expo-router";
 
 const Index = () => {
     const [todos, setTodos] = useState([]);
     const [text, setText] = useState('');
     const [loaded, error] = useFonts({Inter_500Medium});
     const {colorScheme, setColorScheme, theme} = useContext(ThemeContext);
+    const router = useRouter();
 
     useEffect(() => {
         const fetchData = async() => {
@@ -63,12 +65,15 @@ const Index = () => {
     const toggleTodo = (id: number) => setTodos(todos.map((todo: Todo): Todo =>
         todo.id === id ? {...todo, completed: !todo.completed} : todo));
 
-    const renderItem = ({item}) =>
+    const handlePress = (id: number) => router.push(`/todos/${id}`);
+
+    const renderItem = ({item}: { item: Todo }) =>
         <View style={styles.toDoItem}>
-            <Text style={[styles.toDoText, item.completed && styles.completedText]}
-                  onPress={() => toggleTodo(item.id)}>
-                {item.title}
-            </Text>
+            <Pressable onPress={() => handlePress(item.id)} onLongPress={() => toggleTodo(item.id)}>
+                <Text style={[styles.toDoText, item.completed && styles.completedText]}>
+                    {item.title}
+                </Text>
+            </Pressable>
             <Pressable onPress={() => removeTodo(item.id)}>
                 <MaterialCommunityIcons name='delete-circle' size={36} color='red' selectable={undefined}/>
             </Pressable>
@@ -77,7 +82,7 @@ const Index = () => {
     return <SafeAreaView style={styles.container}>
         <View style={styles.inputContainer}>
             <TextInput style={styles.input} placeholder="Add a new todo" placeholderTextColor="gray" value={text}
-                       onChangeText={setText}/>
+                       onChangeText={setText} maxLength={30}/>
             <Pressable onPress={addTodo} style={styles.addButton}>
                 <Text style={styles.addButtonText}>
                     Add
