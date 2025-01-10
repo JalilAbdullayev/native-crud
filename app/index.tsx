@@ -1,17 +1,21 @@
 import {FlatList, Pressable, StyleSheet, Text, TextInput, View} from "react-native";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {data, Todo} from "@/data/todos";
 import {SafeAreaView} from "react-native-safe-area-context";
-import {MaterialCommunityIcons} from "@expo/vector-icons";
+import {MaterialCommunityIcons, Octicons} from "@expo/vector-icons";
 import {useFonts} from "expo-font";
 import {Inter_500Medium} from "@expo-google-fonts/inter";
+import {ThemeContext} from "@/context/ThemeContext";
 
 const Index = () => {
     const [todos, setTodos] = useState(data.sort((a: Todo, b: Todo) => b.id - a.id));
     const [text, setText] = useState('');
     const [loaded, error] = useFonts({Inter_500Medium});
+    const {colorScheme, setColorScheme, theme} = useContext(ThemeContext);
 
     if(!loaded && !error) return null;
+
+    const styles = createStyles(theme, colorScheme);
 
     const addTodo = () => {
         if(text.trim()) {
@@ -47,6 +51,12 @@ const Index = () => {
                     Add
                 </Text>
             </Pressable>
+            <Pressable onPress={() => setColorScheme(colorScheme === 'light' ? 'dark' : 'light')}
+                       style={{marginLeft: 10}}>
+                {colorScheme === 'dark' ?
+                    <Octicons name='moon' size={36} color={theme.text} selectable={undefined} style={{width: 36}}/> :
+                    <Octicons name='sun' size={36} color={theme.text} selectable={undefined} style={{width: 36}}/>}
+            </Pressable>
         </View>
         <FlatList data={todos} renderItem={renderItem} keyExtractor={todo => todo.id.toString()}
                   contentContainerStyle={{flexGrow: 1}}/>
@@ -55,10 +65,10 @@ const Index = () => {
 
 export default Index;
 
-const styles = StyleSheet.create({
+const createStyles = (theme, colorScheme) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'black',
+        backgroundColor: theme.background,
     },
     inputContainer: {
         flexDirection: 'row',
@@ -80,15 +90,15 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontFamily: 'Inter_500Medium',
         minWidth: 0,
-        color: 'white'
+        color: theme.text
     },
     addButton: {
-        backgroundColor: 'white',
+        backgroundColor: theme.button,
         borderRadius: 5,
         padding: 10
     },
     addButtonText: {
-        color: 'black',
+        color: colorScheme === 'dark' ? 'black' : 'white',
         fontSize: 18,
         fontFamily: 'Inter_500Medium',
     },
@@ -109,7 +119,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: 18,
         fontFamily: 'Inter_500Medium',
-        color: 'white'
+        color: theme.text
     },
     completedText: {
         textDecorationLine: 'line-through',
