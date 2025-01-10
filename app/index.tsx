@@ -3,14 +3,19 @@ import {useState} from "react";
 import {data, Todo} from "@/data/todos";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
+import {useFonts} from "expo-font";
+import {Inter_500Medium} from "@expo-google-fonts/inter";
 
 const Index = () => {
     const [todos, setTodos] = useState(data.sort((a: Todo, b: Todo) => b.id - a.id));
     const [text, setText] = useState('');
+    const [loaded, error] = useFonts({Inter_500Medium});
+
+    if(!loaded && !error) return null;
 
     const addTodo = () => {
         if(text.trim()) {
-            const newId = todos.length > 0 ? todos[0].id + 1 : 1;
+            const newId: number = todos.length > 0 ? todos[0].id + 1 : 1;
             setTodos([{id: newId, title: text, completed: false}, ...todos]);
             setText('');
         }
@@ -73,6 +78,7 @@ const styles = StyleSheet.create({
         padding: 10,
         marginRight: 10,
         fontSize: 18,
+        fontFamily: 'Inter_500Medium',
         minWidth: 0,
         color: 'white'
     },
@@ -83,7 +89,8 @@ const styles = StyleSheet.create({
     },
     addButtonText: {
         color: 'black',
-        fontSize: 18
+        fontSize: 18,
+        fontFamily: 'Inter_500Medium',
     },
     toDoItem: {
         flexDirection: 'row',
@@ -101,6 +108,7 @@ const styles = StyleSheet.create({
     toDoText: {
         flex: 1,
         fontSize: 18,
+        fontFamily: 'Inter_500Medium',
         color: 'white'
     },
     completedText: {
