@@ -1,4 +1,4 @@
-import {FlatList, Pressable, StyleSheet, Text, TextInput, View} from "react-native";
+import {Pressable, StyleSheet, Text, TextInput, View} from "react-native";
 import {useContext, useState} from "react";
 import {data, Todo} from "@/data/todos";
 import {SafeAreaView} from "react-native-safe-area-context";
@@ -6,6 +6,7 @@ import {MaterialCommunityIcons, Octicons} from "@expo/vector-icons";
 import {useFonts} from "expo-font";
 import {Inter_500Medium} from "@expo-google-fonts/inter";
 import {ThemeContext} from "@/context/ThemeContext";
+import Animated, {LinearTransition} from "react-native-reanimated";
 
 const Index = () => {
     const [todos, setTodos] = useState(data.sort((a: Todo, b: Todo) => b.id - a.id));
@@ -58,8 +59,9 @@ const Index = () => {
                     <Octicons name='sun' size={36} color={theme.text} selectable={undefined} style={{width: 36}}/>}
             </Pressable>
         </View>
-        <FlatList data={todos} renderItem={renderItem} keyExtractor={todo => todo.id.toString()}
-                  contentContainerStyle={{flexGrow: 1}}/>
+        <Animated.FlatList data={todos} renderItem={renderItem} keyExtractor={todo => todo.id.toString()}
+                           contentContainerStyle={{flexGrow: 1}} itemLayoutAnimation={LinearTransition}
+                           keyboardDismissMode='on-drag'/>
     </SafeAreaView>
 }
 
