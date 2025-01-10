@@ -8,6 +8,7 @@ import {Inter_500Medium} from "@expo-google-fonts/inter";
 import {ThemeContext} from "@/context/ThemeContext";
 import Animated, {LinearTransition} from "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {StatusBar} from "expo-status-bar";
 
 const Index = () => {
     const [todos, setTodos] = useState([]);
@@ -92,6 +93,7 @@ const Index = () => {
         <Animated.FlatList data={todos} renderItem={renderItem} keyExtractor={todo => todo.id.toString()}
                            contentContainerStyle={{flexGrow: 1}} itemLayoutAnimation={LinearTransition}
                            keyboardDismissMode='on-drag'/>
+        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'}/>
     </SafeAreaView>
 }
 
